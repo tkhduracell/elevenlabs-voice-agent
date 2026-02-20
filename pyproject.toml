@@ -1,0 +1,86 @@
+[project]
+name = "elevenlabs-voice-agent"
+version = "1.0.0"
+description = "ElevenLabs Voice Agent for Home Assistant"
+requires-python = ">=3.12"
+
+[tool.ruff]
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "ALL",
+]
+ignore = [
+    "ANN401",  # Dynamically typed expressions (typing.Any) are disallowed
+    "ARG001",  # Unused function argument (HA platform signatures require them)
+    "ARG002",  # Unused method argument (HA callback signatures require them)
+    "COM812",  # Trailing comma missing (incompatible with formatter)
+    "D107",    # Missing docstring in `__init__` (HA convention)
+    "D203",    # no-blank-line-before-class (incompatible with D211)
+    "D212",    # multi-line-summary-first-line (incompatible with D213)
+    "E501",    # Line too long (formatter handles what it can)
+    "EM101",   # Exception must not use a string literal
+    "EM102",   # Exception must not use an f-string literal
+    "FBT001",  # Boolean-typed positional argument (common in HA)
+    "FBT002",  # Boolean default positional argument (common in HA)
+    "FBT003",  # Boolean positional value in function call (common in HA)
+    "ISC001",  # Implicitly concatenated string on single line (incompatible with formatter)
+    "PLR0913", # Too many arguments to function call (common in HA)
+    "PLR2004", # Magic value used in comparison (HTTP status codes etc.)
+    "S113",    # Probable use of requests without timeout (HA manages timeouts)
+    "TC002",   # Move third-party import into TYPE_CHECKING block (risky for HA runtime)
+    "TC003",   # Move standard library import into TYPE_CHECKING block (risky for HA runtime)
+    "TRY003",  # Avoid specifying long messages outside the exception class
+    "TRY400",  # Use `logging.exception` instead of `logging.error`
+]
+
+[tool.ruff.lint.per-file-ignores]
+"custom_components/elevenlabs_agent/const.py" = [
+    "D100",  # Missing docstring in public module (constants file)
+]
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
+
+[tool.ruff.lint.mccabe]
+max-complexity = 25
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = ["custom_components"]
+combine-as-imports = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.12"
+show_error_codes = true
+follow_imports = "silent"
+local_partial_types = true
+strict_equality = true
+warn_incomplete_stub = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+enable_error_code = [
+    "ignore-without-code",
+    "redundant-self",
+    "truthy-iterable",
+]
+disable_error_code = [
+    "annotation-unchecked",
+    "import-not-found",
+    "import-untyped",
+    "override",
+]
+extra_checks = false
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+warn_return_any = true
+warn_unreachable = true

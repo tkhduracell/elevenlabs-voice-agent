@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-import os
+from pathlib import Path
 
 from homeassistant.components import frontend, panel_custom
 from homeassistant.components.frontend import add_extra_js_url
@@ -35,7 +35,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     agent_id = entry.data[CONF_AGENT_ID]
 
     # Register the frontend directory as a static path
-    frontend_path = os.path.join(os.path.dirname(__file__), "frontend")
+    frontend_path = str(Path(__file__).parent / "frontend")
     await hass.http.async_register_static_paths(
         [StaticPathConfig(PANEL_URL, frontend_path, cache_headers=False)]
     )
