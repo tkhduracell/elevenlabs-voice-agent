@@ -6,7 +6,6 @@ import logging
 from pathlib import Path
 
 from homeassistant.components import frontend, panel_custom
-from homeassistant.components.frontend import add_extra_js_url
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -35,9 +34,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await hass.http.async_register_static_paths(
         [StaticPathConfig(PANEL_URL, frontend_path, cache_headers=False)]
     )
-
-    # Load custom icon set at frontend startup
-    add_extra_js_url(hass, f"{PANEL_URL}/icons.js")
 
     # Register the sidebar panel
     await panel_custom.async_register_panel(
