@@ -6,3 +6,5 @@ dist/
 build/
 .eggs/
 .context/
+.env
+.venv/
