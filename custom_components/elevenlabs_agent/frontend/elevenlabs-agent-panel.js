@@ -43,6 +43,39 @@ class ElevenLabsAgentPanel extends HTMLElement {
   async _render() {
     if (!this._agentId) return;
 
+    if (!window.isSecureContext) {
+      this.innerHTML = `
+        <style>
+          elevenlabs-agent-panel {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-background-color, #fafafa);
+          }
+          .elevenlabs-error {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100vh;
+            font-family: var(--paper-font-body1_-_font-family, "Roboto", sans-serif);
+            color: var(--error-color, #db4437);
+            font-size: 16px;
+            text-align: center;
+            padding: 16px;
+            box-sizing: border-box;
+          }
+        </style>
+        <div class="elevenlabs-error">
+          <strong>HTTPS Required</strong><br>
+          The voice agent requires a secure (HTTPS) connection to access the microphone.<br>
+          Please configure Home Assistant with SSL/TLS or access it via HTTPS.
+        </div>
+      `;
+      return;
+    }
+
     this.innerHTML = `
       <style>
         elevenlabs-agent-panel {
@@ -63,13 +96,6 @@ class ElevenLabsAgentPanel extends HTMLElement {
           font-family: var(--paper-font-body1_-_font-family, "Roboto", sans-serif);
           color: var(--primary-text-color, #333);
           font-size: 16px;
-        }
-        .elevenlabs-error {
-          font-family: var(--paper-font-body1_-_font-family, "Roboto", sans-serif);
-          color: var(--error-color, #db4437);
-          font-size: 16px;
-          text-align: center;
-          padding: 16px;
         }
       </style>
       <div class="elevenlabs-container">
@@ -98,7 +124,7 @@ class ElevenLabsAgentPanel extends HTMLElement {
           }
         </style>
         <div class="elevenlabs-container">
-          <elevenlabs-convai agent-id="${this._agentId}"></elevenlabs-convai>
+          <elevenlabs-convai agent-id="${this._agentId}" variant="full" always-expanded></elevenlabs-convai>
         </div>
       `;
     } catch (err) {
