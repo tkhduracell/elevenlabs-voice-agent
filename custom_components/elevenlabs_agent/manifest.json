@@ -3,10 +3,10 @@
   "name": "ElevenLabs Voice Agent",
   "codeowners": ["@tkhduracell"],
   "config_flow": true,
-  "documentation": "https://github.com/tkhduracell/home-assistant-elevenlabs-voice-agent",
-  "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/tkhduracell/home-assistant-elevenlabs-voice-agent/issues",
-  "requirements": [],
   "dependencies": ["http", "frontend", "panel_custom"],
+  "documentation": "https://github.com/tkhduracell/elevenlabs-voice-agent",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/tkhduracell/elevenlabs-voice-agent/issues",
+  "requirements": [],
   "version": "1.0.0"
 }
