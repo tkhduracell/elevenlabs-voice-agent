@@ -52,6 +52,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={"agent_id": agent_id},
     )
 
+    hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = {"agent_id": agent_id}
     _LOGGER.info("ElevenLabs Voice Agent panel registered as '%s'", PANEL_TITLE)
     return True
