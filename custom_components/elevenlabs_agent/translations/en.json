@@ -1,0 +1,19 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure ElevenLabs Voice Agent",
+        "description": "Enter your ElevenLabs Conversational AI agent ID. You can find this in the ElevenLabs dashboard under your agent's settings.",
+        "data": {
+          "agent_id": "Agent ID"
+        }
+      }
+    },
+    "error": {
+      "invalid_agent_id": "Please enter a valid agent ID."
+    },
+    "abort": {
+      "already_configured": "This agent is already configured."
+    }
+  }
+}
