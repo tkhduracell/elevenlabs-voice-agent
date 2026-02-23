@@ -3,6 +3,7 @@ class ElevenLabsAgentPanel extends HTMLElement {
     super();
     this._agentId = null;
     this._scriptLoaded = false;
+    this._shadowPollInterval = null;
   }
 
   set panel(panel) {
@@ -38,6 +39,75 @@ class ElevenLabsAgentPanel extends HTMLElement {
         reject(new Error("Failed to load ElevenLabs widget script"));
       document.head.appendChild(script);
     });
+  }
+
+  _injectShadowStyles() {
+    if (this._shadowPollInterval) {
+      clearInterval(this._shadowPollInterval);
+    }
+
+    const widget = this.querySelector("elevenlabs-convai");
+    if (!widget) return;
+
+    let attempts = 0;
+    const maxAttempts = 50;
+
+    this._shadowPollInterval = setInterval(() => {
+      attempts++;
+      const shadow = widget.shadowRoot;
+
+      if (shadow) {
+        clearInterval(this._shadowPollInterval);
+        this._shadowPollInterval = null;
+
+        const style = document.createElement("style");
+        style.textContent = `
+          :host {
+            position: absolute !important;
+            inset: 0 !important;
+          }
+
+          .overlay {
+            --el-overlay-padding: 0px !important;
+            padding: 0 !important;
+          }
+
+          [data-variant="expanded"].sheet,
+          [data-variant="compact"].sheet,
+          [data-variant="fullscreen"].sheet {
+            border-radius: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            height: 100% !important;
+            max-height: 100% !important;
+            margin: 0 !important;
+            bottom: 0 !important;
+          }
+        `;
+        shadow.appendChild(style);
+        return;
+      }
+
+      if (attempts >= maxAttempts) {
+        clearInterval(this._shadowPollInterval);
+        this._shadowPollInterval = null;
+        console.warn("ElevenLabs widget: could not access shadowRoot after 5s");
+      }
+    }, 100);
+  }
+
+  async _fetchDebugConfig() {
+    const el = this.querySelector("#debug-config");
+    if (!el) return;
+    try {
+      const resp = await fetch(
+        `https://api.elevenlabs.io/v1/convai/agents/${this._agentId}/widget`
+      );
+      const data = await resp.json();
+      el.textContent = JSON.stringify(data, null, 2);
+    } catch (err) {
+      el.textContent = "Failed to fetch config: " + err.message;
+    }
   }
 
   async _render() {
@@ -111,22 +181,44 @@ class ElevenLabsAgentPanel extends HTMLElement {
           elevenlabs-agent-panel {
             display: block;
             width: 100%;
-            height: 100%;
+            overflow-y: auto;
             background-color: var(--primary-background-color, #fafafa);
           }
           .elevenlabs-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;
             width: 100%;
             height: 100vh;
+            overflow: hidden;
             box-sizing: border-box;
+          }
+          .elevenlabs-debug {
+            padding: 16px;
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--primary-text-color, #ccc);
+            background: var(--primary-background-color, #111);
+          }
+          .elevenlabs-debug h3 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+          }
+          .elevenlabs-debug pre {
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin: 0;
           }
         </style>
         <div class="elevenlabs-container">
-          <elevenlabs-convai agent-id="${this._agentId}" variant="full" always-expanded></elevenlabs-convai>
+          <elevenlabs-convai agent-id="${this._agentId}" always-expanded="true" default-expanded="true"></elevenlabs-convai>
+        </div>
+        <div class="elevenlabs-debug">
+          <h3>Agent Widget Config</h3>
+          <pre id="debug-config">Loading...</pre>
         </div>
       `;
+
+      this._injectShadowStyles();
+      this._fetchDebugConfig();
     } catch (err) {
       this.innerHTML = `
         <style>
