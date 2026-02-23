@@ -68,20 +68,19 @@ class ElevenLabsAgentPanel extends HTMLElement {
           }
 
           .overlay {
-            --el-overlay-padding: 0px !important;
+            inset: 0 !important;
             padding: 0 !important;
           }
 
-          [data-variant="expanded"].sheet,
-          [data-variant="compact"].sheet,
-          [data-variant="fullscreen"].sheet {
+          .sheet {
             border-radius: 0 !important;
             width: 100% !important;
             max-width: 100% !important;
             height: 100% !important;
             max-height: 100% !important;
             margin: 0 !important;
-            bottom: 0 !important;
+            inset: 0 !important;
+            position: absolute !important;
           }
         `;
         shadow.appendChild(style);
